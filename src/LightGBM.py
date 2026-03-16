@@ -117,7 +117,6 @@ for i,a in enumerate(ATTRS):
         X_tr,y_tr,
         eval_set=[(X_va,y_va)],
         eval_metric="l2",
-        verbose=False
 
     )
 

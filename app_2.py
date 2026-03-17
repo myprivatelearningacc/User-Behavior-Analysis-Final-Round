@@ -1177,13 +1177,24 @@ def page_capacity(temperature):
         st.image(fig_to_bytes(fig), width='stretch')
 
     # Top critical customers
+    # Top critical customers
     st.markdown('<div class="section-title">🔴 Top Critical Customers</div>', unsafe_allow_html=True)
-    critical = batch_df[((batch_df['attr_3']>=75)|(batch_df['attr_6']>=75))].copy()
-    critical = critical.sort_values('attr_3',ascending=False)
+    critical = batch_df[((batch_df['attr_3'] >= 75) | (batch_df['attr_6'] >= 75))].copy()
+    critical = critical.sort_values('attr_3', ascending=False)
+
     if len(critical) > 0:
-        st.dataframe(critical[['customer_id','attr_3','attr_6','duration_days'] if 'customer_id' in critical.columns else
-                               ['attr_3','attr_6']].head(10),
-                     width='stretch', hide_index=True)
+        show_cols = []
+
+        if 'customer_id' in critical.columns:
+            show_cols.append('customer_id')
+
+        show_cols += [c for c in ['attr_3', 'attr_6', 'duration_days', 'duration'] if c in critical.columns]
+
+        st.dataframe(
+            critical[show_cols].head(10),
+            width='stretch',
+            hide_index=True
+        )
     else:
         st.success("✅ Không có critical customers!")
 

@@ -261,7 +261,17 @@ def parse_sequence_text(text):
             if not np.isnan(v): tokens.append(int(round(v)))
         except: pass
     return tokens
-
+class _PandasFixUnpickler(pickle.Unpickler):
+    """Custom unpickler that patches pandas StringDtype compatibility."""
+    def find_class(self, module, name):
+        if module == 'pandas' and name == 'StringDtype':
+            # Return object dtype instead — avoids NDArrayBacked error
+            import pandas as pd
+            class FakeStringDtype:
+                def __new__(cls, *args, **kwargs):
+                    return pd.StringDtype()
+            return FakeStringDtype
+        return super().find_class(module, name)
 # ══════════════════════════════════════════════════════════════════
 # LOAD ARTIFACTS
 # ══════════════════════════════════════════════════════════════════

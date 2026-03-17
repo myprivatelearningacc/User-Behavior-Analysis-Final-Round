@@ -867,13 +867,13 @@ def make_sidebar():
     st.sidebar.divider()
 
     page = st.sidebar.radio("📌 Navigation", [
-        "🏠 Home",
-        "🔮 Single Prediction",
-        "📊 Attention & XAI",
-        "⚙️ Dynamic Scheduler",
-        "🎯 What-If Simulator",
-        "⚠️ Risk Detector",
-        "📈 Model Analytics",
+        "🏠 Trang chủ",
+        "🔮 Dự đoán 1 khách hàng",
+        "📊 Giải thích dự đoán",
+        "⚙️ Lập lịch sản xuất",
+        "🎯 Giả lập kịch bản",
+        "⚠️ Phát hiện rủi ro",
+        "📈 Phân tích mô hình",
     ], label_visibility="collapsed")
 
     st.sidebar.divider()
@@ -990,13 +990,13 @@ def page_home():
 
 
 # ══════════════════════════════════════════════════════════════════
-# PAGE: SINGLE PREDICTION
+# PAGE: Dự đoán 1 khách hàng
 # ══════════════════════════════════════════════════════════════════
 def page_prediction(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Inference</div>
-      <h1 style='margin:0;font-size:1.9rem'>🔮 Single Customer Prediction</h1>
+      <h1 style='margin:0;font-size:1.9rem'>🔮 Dự đoán 1 khách hàng</h1>
       <p style='color:#64748b'>Nhập chuỗi hành vi → Dự đoán 6 thuộc tính + Quyết định kinh doanh</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1192,7 +1192,7 @@ def page_scheduler(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Supply Chain Dynamic Scheduler</div>
-      <h1 style='margin:0;font-size:1.9rem'>⚙️ Dynamic Scheduler</h1>
+      <h1 style='margin:0;font-size:1.9rem'>⚙️ Lập lịch sản xuất</h1>
       <p style='color:#64748b'>Tính toán ngược từ Ngày hoàn thành + Công suất nhà máy → Chỉ thị sản xuất hôm nay</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1250,7 +1250,7 @@ def page_whatif(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Scenario Planning</div>
-      <h1 style='margin:0;font-size:1.9rem'>🎯 What-If Simulator</h1>
+      <h1 style='margin:0;font-size:1.9rem'>🎯 Giả lập kịch bản</h1>
       <p style='color:#64748b'>Giả lập kịch bản rủi ro: Nếu khách hàng thay đổi mẫu mã/số lượng, nhà máy sẽ bị quá tải ở đâu?</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1327,7 +1327,7 @@ def page_whatif(temperature):
                     st.markdown(f'<div class="action-item {cls}">{atxt}</div>', unsafe_allow_html=True)
 
             if dec_sim['wh_space'] > 0.9:
-                st.error("🚨 **CẢNH BÁO NGHIÊM TRỌNG**: Kịch bản giả lập → KHO SẮP ĐẦY! Giải phóng diện tích ngay hoặc từ chối đơn hàng mới!")
+                st.error("🚨 **CẢNH BÁO NGHIÊM TRỌNG**: Kịch bản giả lập → KHO GẦN ĐẠT NGƯỠNG TỐI ĐA! Giải phóng diện tích ngay hoặc từ chối đơn hàng mới!")
             elif dec_sim['wh_space'] > 0.7:
                 st.warning("⚠️ Kịch bản giả lập: Kho sắp đến ngưỡng cảnh báo - Theo dõi chặt chẽ và chuẩn bị kế hoạch dự phòng")
             else:
@@ -1344,7 +1344,7 @@ def page_risk(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Risk Management</div>
-      <h1 style='margin:0;font-size:1.9rem'>⚠️ Risk Detector</h1>
+      <h1 style='margin:0;font-size:1.9rem'>⚠️ Phát hiện rủi ro</h1>
       <p style='color:#64748b'>Phát hiện đơn hàng rủi ro dựa trên Attention Dispersion + Factory Load. Đề xuất giảm tiến độ SX trên đơn không chắc chắn.</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1464,7 +1464,7 @@ def page_analytics():
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Training Analytics</div>
-      <h1 style='margin:0;font-size:1.9rem'>📈 Model Analytics</h1>
+      <h1 style='margin:0;font-size:1.9rem'>📈 Phân tích mô hình</h1>
       <p style='color:#64748b'>Kết quả phân tích chi tiết từ quá trình training DATAFLOW V9.6</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1539,19 +1539,19 @@ def page_analytics():
 def main():
     page, temperature = make_sidebar()
 
-    if page == "🏠 Home":
+    if page == "🏠 Trang chủ":
         page_home()
-    elif page == "🔮 Single Prediction":
+    elif page == "🔮 Dự đoán 1 khách hàng":
         page_prediction(temperature)
-    elif page == "📊 Attention & XAI":
+    elif page == "📊 Giải thích dự đoán":
         page_attention(temperature)
-    elif page == "⚙️ Dynamic Scheduler":
+    elif page == "⚙️ Lập lịch sản xuất":
         page_scheduler(temperature)
-    elif page == "🎯 What-If Simulator":
+    elif page == "🎯 Giả lập kịch bản":
         page_whatif(temperature)
-    elif page == "⚠️ Risk Detector":
+    elif page == "⚠️ Phát hiện rủi ro":
         page_risk(temperature)
-    elif page == "📈 Model Analytics":
+    elif page == "📈 Phân tích mô hình":
         page_analytics()
 
 if __name__ == "__main__":

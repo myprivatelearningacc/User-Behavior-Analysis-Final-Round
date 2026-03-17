@@ -1111,7 +1111,7 @@ def page_attention(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>XAI · Explainability</div>
-      <h1 style='margin:0;font-size:1.9rem'>📊 Attention & Explainability</h1>
+      <h1 style='margin:0;font-size:1.9rem'>📊 Giải thích dự đoán</h1>
       <p style='color:#64748b'>Phân tích cơ chế attention - Tại sao mô hình dự đoán sai trên dữ liệu dị biệt?</p>
     </div>
     """, unsafe_allow_html=True)

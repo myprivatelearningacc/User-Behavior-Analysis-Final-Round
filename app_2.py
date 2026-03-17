@@ -731,17 +731,17 @@ def make_sidebar():
     st.sidebar.divider()
 
     page = st.sidebar.radio("📌 Navigation", [
-        "🏠 Home",
-        "🔮 Single Prediction",
-        "📂 Batch Import & Export",
-        "🏭 Capacity Planner",
-        "🧬 Token DNA",
-        "📊 Attention & XAI",
-        "⚙️ Dynamic Scheduler",
-        "🎯 What-If Simulator",
-        "⚠️ Risk Detector",
-        "🕐 Prediction History",
-        "📈 Model Analytics",
+        "🏠 Trang chủ",
+        "🔮 Dự đoán 1 khách hàng",
+        "📂 Nhập và xuất dữ liệu hàng loạt",
+        "🏭 Kế hoạch công suất nhà máy",
+        "🧬 Hồ sơ hành vi",
+        "📊 Giải thích dự đoán",
+        "⚙️ Lập lịch sản xuất",
+        "🎯 Giả lập kịch bản",
+        "⚠️ Phát hiện rủi ro",
+        "🕐 Lịch sử Dự đoán",
+        "📈 Phân tích mô hình",
     ], label_visibility="collapsed")
 
     st.sidebar.divider()
@@ -915,7 +915,7 @@ def page_batch(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Batch Processing</div>
-      <h1 style='margin:0;font-size:1.9rem'>📂 Batch Import & Export</h1>
+      <h1 style='margin:0;font-size:1.9rem'>📂 Nhập và xuất dữ liệu hàng loạt</h1>
       <p style='color:#64748b'>Upload CSV nhiều khách hàng → Predict tất cả → Export kết quả + capacity plan</p>
     </div>""", unsafe_allow_html=True)
 
@@ -1113,7 +1113,7 @@ def page_capacity(temperature):
     batch_df = st.session_state.get('batch_results', None)
 
     if batch_df is None:
-        st.info("💡 Chạy **Batch Import & Export** trước để có dữ liệu, hoặc nhập sequences thủ công bên dưới.")
+        st.info("💡 Chạy **Nhập và xuất dữ liệu hàng loạt** trước để có dữ liệu, hoặc nhập sequences thủ công bên dưới.")
 
         st.markdown('<div class="section-title">📝 Nhập thủ công (mỗi dòng 1 sequence)</div>', unsafe_allow_html=True)
         manual = st.text_area("Sequences:", value="\n".join(SAMPLE_CSV.strip().split('\n')[1:6]), height=120)
@@ -1307,7 +1307,7 @@ def page_attention(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>XAI · Explainability</div>
-      <h1 style='margin:0;font-size:1.9rem'>📊 Attention & XAI</h1>
+      <h1 style='margin:0;font-size:1.9rem'>📊 Giải thích dự đoán</h1>
     </div>""", unsafe_allow_html=True)
 
     c1,c2,c3=st.columns(3)
@@ -1352,7 +1352,7 @@ def page_scheduler(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Supply Chain Dynamic Scheduler</div>
-      <h1 style='margin:0;font-size:1.9rem'>⚙️ Dynamic Scheduler</h1>
+      <h1 style='margin:0;font-size:1.9rem'>⚙️ Lập lịch sản xuất</h1>
     </div>""", unsafe_allow_html=True)
 
     seq_text = st.text_area("Chuỗi hành vi:", value="21040 20022 102 103 21040 105 20022 102 21040 20022", height=75)
@@ -1386,7 +1386,7 @@ def page_whatif(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Scenario Planning</div>
-      <h1 style='margin:0;font-size:1.9rem'>🎯 What-If Simulator</h1>
+      <h1 style='margin:0;font-size:1.9rem'>🎯 Giả lập kịch bản</h1>
     </div>""", unsafe_allow_html=True)
 
     seq_text = st.text_area("Chuỗi hành vi:", value="21040 20022 102 103 21040 105 20022 102 21040", height=75)
@@ -1456,7 +1456,7 @@ def page_risk(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Risk Management</div>
-      <h1 style='margin:0;font-size:1.9rem'>⚠️ Risk Detector</h1>
+      <h1 style='margin:0;font-size:1.9rem'>⚠️ Phát hiện rủi ro</h1>
     </div>""", unsafe_allow_html=True)
 
     manual_seqs = st.text_area("Sequences (mỗi dòng 1 sequence):",
@@ -1514,14 +1514,14 @@ def page_history():
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Session Tracking</div>
-      <h1 style='margin:0;font-size:1.9rem'>🕐 Prediction History</h1>
+      <h1 style='margin:0;font-size:1.9rem'>🕐 Lịch sử Dự đoán</h1>
       <p style='color:#64748b'>Lịch sử tất cả predictions trong session hiện tại</p>
     </div>""", unsafe_allow_html=True)
 
     hist = st.session_state.get('history', [])
 
     if not hist:
-        st.info("💡 Chưa có predictions. Hãy chạy Single Prediction hoặc Batch Import trước.")
+        st.info("💡 Chưa có predictions. Hãy chạy Dự đoán 1 khách hàng hoặc Batch Import trước.")
         return
 
     # Summary stats
@@ -1603,7 +1603,7 @@ def page_analytics():
     st.markdown("""
     <div style='padding:8px 0 24px'>
       <div class='title-sub'>Training Analytics</div>
-      <h1 style='margin:0;font-size:1.9rem'>📈 Model Analytics</h1>
+      <h1 style='margin:0;font-size:1.9rem'>📈 Phân tích mô hình</h1>
     </div>""", unsafe_allow_html=True)
 
     arts=load_artifacts()
@@ -1638,17 +1638,17 @@ def page_analytics():
 # ══════════════════════════════════════════════════════════════════
 def main():
     page, temperature = make_sidebar()
-    if   page=="🏠 Home":                  page_home()
-    elif page=="🔮 Single Prediction":     page_prediction(temperature)
-    elif page=="📂 Batch Import & Export": page_batch(temperature)
-    elif page=="🏭 Capacity Planner":      page_capacity(temperature)
-    elif page=="🧬 Token DNA":             page_token_dna(temperature)
-    elif page=="📊 Attention & XAI":       page_attention(temperature)
-    elif page=="⚙️ Dynamic Scheduler":    page_scheduler(temperature)
-    elif page=="🎯 What-If Simulator":     page_whatif(temperature)
-    elif page=="⚠️ Risk Detector":         page_risk(temperature)
-    elif page=="🕐 Prediction History":    page_history()
-    elif page=="📈 Model Analytics":       page_analytics()
+    if   page=="🏠 Trang chủ":                  page_home()
+    elif page=="🔮 Dự đoán 1 khách hàng":     page_prediction(temperature)
+    elif page=="📂 Nhập và xuất dữ liệu hàng loạt": page_batch(temperature)
+    elif page=="🏭 Kế hoạch công suất nhà máy":      page_capacity(temperature)
+    elif page=="🧬 Hồ sơ hành vi":             page_token_dna(temperature)
+    elif page=="📊 Giải thích dự đoán":       page_attention(temperature)
+    elif page=="⚙️ Lập lịch sản xuất":    page_scheduler(temperature)
+    elif page=="🎯 Giả lập kịch bản":     page_whatif(temperature)
+    elif page=="⚠️ Phát hiện rủi ro":         page_risk(temperature)
+    elif page=="🕐 Lịch sử Dự đoán":    page_history()
+    elif page=="📈 Phân tích mô hình":       page_analytics()
 
 if __name__ == "__main__":
     main()

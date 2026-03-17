@@ -12,6 +12,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+from huggingface_hub import hf_hub_download
 import torch
 import torch.nn as nn
 import math
@@ -20,7 +21,6 @@ import io
 import csv
 import json
 import matplotlib
-from huggingface_hub import hf_hub_download
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -259,66 +259,27 @@ def parse_sequence_text(text):
         try:
             v=float(item.strip())
             if not np.isnan(v): tokens.append(int(round(v)))
-        except:
-            pass
+        except: pass
     return tokens
-
-
 def _fix_pandas_dtypes(obj):
-    """
-    Recursively fix pandas objects after unpickling across environments.
-    """
     if isinstance(obj, pd.DataFrame):
-        df = obj.copy()
-        for col in df.columns:
+        result = obj.copy()
+        for col in result.columns:
             try:
-                dtype_str = str(df[col].dtype).lower()
-
-                if "string" in dtype_str:
-                    df[col] = df[col].astype(str)
-
-                elif "boolean" in dtype_str:
-                    if df[col].isna().any():
-                        df[col] = df[col].astype(object)
-                    else:
-                        df[col] = df[col].astype(bool)
-
-                elif dtype_str.startswith("int") and "[" in dtype_str:
-                    if df[col].isna().any():
-                        df[col] = df[col].astype("float64")
-                    else:
-                        df[col] = df[col].astype("int64")
-
-            except Exception:
+                dtype_str = str(result[col].dtype).lower()
+                if 'string' in dtype_str:
+                    result[col] = result[col].astype(object)
+            except:
                 pass
-        return df
-
-    if isinstance(obj, pd.Series):
-        s = obj.copy()
-        try:
-            dtype_str = str(s.dtype).lower()
-            if "string" in dtype_str:
-                s = s.astype(str)
-            elif "boolean" in dtype_str:
-                s = s.astype(object) if s.isna().any() else s.astype(bool)
-        except Exception:
-            pass
-        return s
-
-    if isinstance(obj, dict):
+        return result
+    elif isinstance(obj, dict):
         return {k: _fix_pandas_dtypes(v) for k, v in obj.items()}
-
-    if isinstance(obj, list):
+    elif isinstance(obj, list):
         return [_fix_pandas_dtypes(v) for v in obj]
-
-    if isinstance(obj, tuple):
-        return tuple(_fix_pandas_dtypes(v) for v in obj)
-
     return obj
 
 
 class _PandasFixUnpickler(pickle.Unpickler):
-    """Custom unpickler that patches pandas StringDtype compatibility."""
     def find_class(self, module, name):
         if module == 'pandas' and name == 'StringDtype':
             import pandas as pd
@@ -327,16 +288,17 @@ class _PandasFixUnpickler(pickle.Unpickler):
                     return pd.StringDtype()
             return FakeStringDtype
         return super().find_class(module, name)
-# ══════════════════════════════════════════════════════════════════
-# LOAD ARTIFACTS
-# ══════════════════════════════════════════════════════════════════
-@st.cache_resource(show_spinner="Loading model...")
+
+
+@st.cache_resource(show_spinner="Loading model from Hugging Face...")
 def load_artifacts():
     try:
         local_path = hf_hub_download(
             repo_id=HF_REPO_ID,
             filename=HF_FILENAME,
-            repo_type="model"
+            repo_type="model",
+            # token=st.secrets.get("HF_TOKEN", None),   # bật nếu repo private
+            # subfolder=HF_SUBFOLDER,                  # bật nếu file nằm trong folder
         )
 
         with open(local_path, "rb") as f:
@@ -361,7 +323,7 @@ def load_artifacts():
         return arts
 
     except Exception as e:
-        st.error(f"Cannot load artifacts: {e}")
+        st.error(f"Cannot load artifacts from Hugging Face: {e}")
         st.code(str(e))
         return None
 

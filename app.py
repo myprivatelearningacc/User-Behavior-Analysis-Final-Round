@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
+import subprocess
 import math
 import pickle
 import io
@@ -470,12 +471,20 @@ class _PandasFixUnpickler(pickle.Unpickler):
 def download_file(url: str, output_path: Path):
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with requests.get(url, stream=True, timeout=300) as r:
-        r.raise_for_status()
-        with open(output_path, "wb") as f:
-            for chunk in r.iter_content(chunk_size=1024 * 1024):
-                if chunk:
-                    f.write(chunk)
+    # xóa file lỗi cũ nếu có
+    if output_path.exists():
+        output_path.unlink()
+
+    try:
+        import gdown
+    except ImportError:
+        subprocess.check_call(["python", "-m", "pip", "install", "gdown"])
+        import gdown
+
+    gdown.download(url, str(output_path), quiet=False, fuzzy=True)
+
+    if not output_path.exists() or output_path.stat().st_size == 0:
+        raise RuntimeError("Download failed: file not created.")
 @st.cache_resource(show_spinner="Loading model...")
 def load_artifacts():
     try:
@@ -483,7 +492,16 @@ def load_artifacts():
             with st.spinner("Downloading artifacts_v96.pkl..."):
                 download_file(ARTIFACT_URL, ARTIFACT_PATH)
 
-        with open(ARTIFACT_PATH, 'rb') as f:
+        # kiểm tra file có phải HTML không
+        with open(ARTIFACT_PATH, "rb") as f:
+            head = f.read(50)
+            f.seek(0)
+
+            if head.startswith(b"<") or b"<!DOCTYPE html" in head.lower():
+                raise RuntimeError(
+                    "Downloaded file is HTML, not a pickle. Google Drive direct link is not working."
+                )
+
             try:
                 arts = pickle.load(f)
             except Exception:
@@ -492,7 +510,7 @@ def load_artifacts():
                     arts = _PandasFixUnpickler(f).load()
                 except Exception:
                     f.seek(0)
-                    arts = pickle.load(f, encoding='latin1')
+                    arts = pickle.load(f, encoding="latin1")
 
         arts = _fix_pandas_dtypes(arts)
 

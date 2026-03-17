@@ -396,8 +396,8 @@ def compute_decision(result,fa_override=None,fb_override=None):
     lead_time=max(3,duration//3)
     actions=[]
     if result['risk']:         actions.append(('danger','⚠️ Dự đoán không chắc chắn — Kiểm tra thủ công'))
-    if fa>=90 or fb>=90:       actions.append(('danger','🚨 Nhà máy gần đầy tải — Báo động ngay'))
-    if fa>=75 or fb>=75:       actions.append(('warning','📋 Tải cao — Lên kế hoạch sản xuất sớm'))
+    if fa>=90 or fb>=90:       actions.append(('danger','🚨 Nhà máy hoạt động với công suất gần tối đa — Báo động ngay'))
+    if fa>=75 or fb>=75:       actions.append(('warning','📋 Nhà máy hoạt động với công suất cao — Lên kế hoạch sản xuất sớm, đặt trước nguyên liệu'))
     if duration<=3:            actions.append(('warning','⚡ Đơn gấp — Xử lý ngay hôm nay'))
     elif duration<=7:          actions.append(('warning','📦 Đơn tuần này — Lên kế hoạch ngay'))
     if duration>60:            actions.append(('ok','📦 Đơn dài hạn — Đặt trước diện tích kho'))
@@ -798,7 +798,7 @@ def page_home():
         st.markdown('<div class="section-title">📋 Output Schema</div>', unsafe_allow_html=True)
         st.dataframe(pd.DataFrame({'Attr':ATTRS,'Ý nghĩa':list(ATTR_NAMES_VI.values()),
                                    'Range':['1-12','1-31','0-99','1-12','1-31','0-99'],
-                                   'W':W_PENALTY}), use_container_width=True, hide_index=True)
+                                   'W':W_PENALTY}), width='stretch', hide_index=True)
     with col_b:
         st.markdown('<div class="section-title">🆕 Tính năng mới</div>', unsafe_allow_html=True)
         features = [
@@ -815,7 +815,7 @@ def page_home():
 
     try:
         st.markdown("<br>", unsafe_allow_html=True)
-        st.image("t_max/attention_maps/mean_attention_heatmap.png", use_container_width=True)
+        st.image("t_max/attention_maps/mean_attention_heatmap.png", width='stretch')
     except: pass
 
 
@@ -861,9 +861,9 @@ def page_prediction(temperature):
     add_to_history(cust_id or 'CUST', seq, result, dec)
 
     st.divider()
-    st.markdown('<div class="section-title">🔗 Chuỗi Nhân Quả</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">🔗 Chuỗi Dự Đoán</div>', unsafe_allow_html=True)
     fig_chain = plot_behavior_timeline_single(seq, preds, conf, risk)
-    st.image(fig_to_bytes(fig_chain), use_container_width=True)
+    st.image(fig_to_bytes(fig_chain), width='stretch')
     st.divider()
 
     st.markdown('<div class="section-title">📊 6 Dự đoán</div>', unsafe_allow_html=True)
@@ -905,7 +905,7 @@ def page_prediction(temperature):
 
     st.divider()
     st.markdown('<div class="section-title">📈 Probability Distribution</div>', unsafe_allow_html=True)
-    st.image(fig_to_bytes(plot_proba_bars(probs,preds,arts['label_min'],arts['n_classes'])), use_container_width=True)
+    st.image(fig_to_bytes(plot_proba_bars(probs,preds,arts['label_min'],arts['n_classes'])), width='stretch')
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -935,7 +935,7 @@ def page_batch(temperature):
             data=SAMPLE_CSV,
             file_name="sample_sequences.csv",
             mime="text/csv",
-            use_container_width=True,
+            width='stretch',
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -965,7 +965,7 @@ def page_batch(temperature):
             if cname in df_in.columns: id_col = cname; break
 
         st.success(f"✅ Loaded {len(df_in):,} rows | ID col: `{id_col or 'auto'}` | Seq col: `{seq_col}`")
-        st.dataframe(df_in.head(3), use_container_width=True, hide_index=True)
+        st.dataframe(df_in.head(3), width='stretch', hide_index=True)
     except Exception as e:
         st.error(f"Parse error: {e}"); return
 
@@ -1051,7 +1051,7 @@ def page_batch(temperature):
                     'duration_days','warehouse_util_pct','confidence_pct','risk','recommendation']
     st.dataframe(
         df_out[display_cols].style.apply(highlight_risk, axis=1),
-        use_container_width=True, hide_index=True
+        width='stretch', hide_index=True
     )
 
     # Export buttons
@@ -1065,7 +1065,7 @@ def page_batch(temperature):
             data=csv_out,
             file_name=f"predictions_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
             mime="text/csv",
-            use_container_width=True,
+            width='stretch',
         )
 
     with col_e2:
@@ -1077,7 +1077,7 @@ def page_batch(temperature):
             data=sub_csv,
             file_name=f"submission_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
             mime="text/csv",
-            use_container_width=True,
+            width='stretch',
         )
 
     with col_e3:
@@ -1090,7 +1090,7 @@ def page_batch(temperature):
                 data=risk_csv,
                 file_name=f"risk_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                 mime="text/csv",
-                use_container_width=True,
+                width='stretch',
             )
         else:
             st.success("✅ Không có HIGH RISK customers!")
@@ -1174,16 +1174,16 @@ def page_capacity(temperature):
     # Capacity plan chart
     fig = plot_capacity_plan(batch_df)
     if fig:
-        st.image(fig_to_bytes(fig), use_container_width=True)
+        st.image(fig_to_bytes(fig), width='stretch')
 
     # Top critical customers
     st.markdown('<div class="section-title">🔴 Top Critical Customers</div>', unsafe_allow_html=True)
     critical = batch_df[((batch_df['attr_3']>=75)|(batch_df['attr_6']>=75))].copy()
     critical = critical.sort_values('attr_3',ascending=False)
     if len(critical) > 0:
-        st.dataframe(critical[['customer_id','attr_3','attr_6','duration'] if 'customer_id' in critical.columns else
+        st.dataframe(critical[['customer_id','attr_3','attr_6','duration_days'] if 'customer_id' in critical.columns else
                                ['attr_3','attr_6']].head(10),
-                     use_container_width=True, hide_index=True)
+                     width='stretch', hide_index=True)
     else:
         st.success("✅ Không có critical customers!")
 
@@ -1234,7 +1234,7 @@ def page_token_dna(temperature):
 
         # DNA visualization
         fig_dna = plot_token_dna(seq, cust_id)
-        st.image(fig_to_bytes(fig_dna), use_container_width=True)
+        st.image(fig_to_bytes(fig_dna), width='stretch')
 
         # Prediction summary
         preds = result['preds']
@@ -1257,7 +1257,7 @@ def page_token_dna(temperature):
 
             if result2:
                 fig_dna2 = plot_token_dna(seq2, compare_id)
-                st.image(fig_to_bytes(fig_dna2), use_container_width=True)
+                st.image(fig_to_bytes(fig_dna2), width='stretch')
 
                 # Similarity score
                 cnt1 = Counter(seq); cnt2 = Counter(seq2)
@@ -1315,7 +1315,7 @@ def page_attention(temperature):
             result = predict_sequence(tuple(seq), temperature, _arts_id=id(arts))
         if result is None: return
 
-        st.image(fig_to_bytes(plot_attention_heatmap(result['attn'], len(seq))), use_container_width=True)
+        st.image(fig_to_bytes(plot_attention_heatmap(result['attn'], len(seq))), width='stretch')
 
         c1,c2,c3=st.columns(3)
         with c1: st.metric("Dispersion",f"{result['dispersion']:.4f}",delta="⚠️ RISKY" if result['dispersion']>3.5 else "✅ OK")
@@ -1330,7 +1330,7 @@ def page_attention(temperature):
     st.divider()
     for attr_focus in ['attr_3','attr_6']:
         st.markdown(f"**Factory {'A' if attr_focus=='attr_3' else 'B'} ({attr_focus})**")
-        try: st.image(f"t_max/attention_maps/familiar_vs_anomalous_{attr_focus}.png", use_container_width=True)
+        try: st.image(f"t_max/attention_maps/familiar_vs_anomalous_{attr_focus}.png", width='stretch')
         except: st.info(f"Chạy training pipeline để sinh chart `{attr_focus}`")
 
 
@@ -1340,7 +1340,7 @@ def page_attention(temperature):
 def page_scheduler(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
-      <div class='title-sub'>Hướng 1 · Supply Chain</div>
+      <div class='title-sub'>Supply Chain Dynamic Scheduler</div>
       <h1 style='margin:0;font-size:1.9rem'>⚙️ Dynamic Scheduler</h1>
     </div>""", unsafe_allow_html=True)
 
@@ -1353,7 +1353,7 @@ def page_scheduler(temperature):
         with st.spinner("Computing..."):
             result = predict_sequence(tuple(seq), temperature, _arts_id=id(arts))
         dec = compute_decision(result)
-        st.image(fig_to_bytes(plot_supply_dashboard(dec)), use_container_width=True)
+        st.image(fig_to_bytes(plot_supply_dashboard(dec)), width='stretch')
         st.divider()
         cols = st.columns(4)
         for (lbl,val,help_txt), col in zip([
@@ -1374,7 +1374,7 @@ def page_scheduler(temperature):
 def page_whatif(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
-      <div class='title-sub'>Hướng 2 · Scenario Planning</div>
+      <div class='title-sub'>Scenario Planning</div>
       <h1 style='margin:0;font-size:1.9rem'>🎯 What-If Simulator</h1>
     </div>""", unsafe_allow_html=True)
 
@@ -1419,7 +1419,7 @@ def page_whatif(temperature):
         axes[2].set_title('Sản lượng hôm nay (%)',color='#e2e8f0'); axes[2].set_ylim(0,110)
         fig.suptitle('What-If Comparison',color='#e2e8f0',fontsize=12,fontweight='bold')
         fig.tight_layout(pad=1.5)
-        st.image(fig_to_bytes(fig), use_container_width=True)
+        st.image(fig_to_bytes(fig), width='stretch')
 
         col_l,col_r=st.columns(2)
         with col_l:
@@ -1444,7 +1444,7 @@ def page_whatif(temperature):
 def page_risk(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
-      <div class='title-sub'>Hướng 3 · Risk Management</div>
+      <div class='title-sub'>Risk Management</div>
       <h1 style='margin:0;font-size:1.9rem'>⚠️ Risk Detector</h1>
     </div>""", unsafe_allow_html=True)
 
@@ -1487,7 +1487,7 @@ def page_risk(temperature):
         if n_high>len(df_r)*0.5: st.error(f"🚨 {n_high}/{len(df_r)} HIGH RISK!")
         elif n_high>0: st.warning(f"⚠️ {n_high} sequences cần kiểm tra")
 
-        st.dataframe(df_r,use_container_width=True,hide_index=True)
+        st.dataframe(df_r,width='stretch',hide_index=True)
 
         # Export risk report
         risk_csv=df_r.to_csv(index=False)
@@ -1548,7 +1548,7 @@ def page_history():
     if risk_filter == "🔴 HIGH only": df_show = df_show[df_show['risk']=='🔴 HIGH']
     elif risk_filter == "🟢 LOW only": df_show = df_show[df_show['risk']=='🟢 LOW']
 
-    st.dataframe(df_show, use_container_width=True, hide_index=True)
+    st.dataframe(df_show, width='stretch', hide_index=True)
 
     # Export & Clear
     col_e1, col_e2 = st.columns(2)
@@ -1559,10 +1559,10 @@ def page_history():
             data=hist_csv,
             file_name=f"history_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
             mime="text/csv",
-            use_container_width=True,
+            width='stretch',
         )
     with col_e2:
-        if st.button("🗑️ Clear History", use_container_width=True):
+        if st.button("🗑️ Clear History", width='stretch'):
             st.session_state.history = []
             st.rerun()
 
@@ -1582,7 +1582,7 @@ def page_history():
         axes[2].set_title('A vs B Scatter', color='#e2e8f0')
         fig.suptitle('History Analytics', color='#e2e8f0', fontsize=12, fontweight='bold')
         fig.tight_layout(pad=1.5)
-        st.image(fig_to_bytes(fig), use_container_width=True)
+        st.image(fig_to_bytes(fig), width='stretch')
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -1613,12 +1613,12 @@ def page_analytics():
           "t_max/visualizations/val_summary_dashboard.png"]
     for tab,img in zip(tabs,imgs):
         with tab:
-            try: st.image(img,use_container_width=True)
+            try: st.image(img,width='stretch')
             except: st.info(f"Chạy training pipeline: `{img}`")
 
     try:
         df_abl=pd.read_csv("t_max/visualizations/ablation_table.csv")
-        st.dataframe(df_abl,use_container_width=True,hide_index=True)
+        st.dataframe(df_abl,width='stretch',hide_index=True)
     except: pass
 
 

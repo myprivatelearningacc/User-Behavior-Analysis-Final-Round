@@ -1191,7 +1191,7 @@ def page_attention(temperature):
 def page_scheduler(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
-      <div class='title-sub'>Hướng 1 · Supply Chain</div>
+      <div class='title-sub'>Supply Chain Dynamic Scheduler</div>
       <h1 style='margin:0;font-size:1.9rem'>⚙️ Dynamic Scheduler</h1>
       <p style='color:#64748b'>Tính toán ngược từ Ngày hoàn thành + Công suất nhà máy → Chỉ thị sản xuất hôm nay</p>
     </div>
@@ -1249,7 +1249,7 @@ def page_scheduler(temperature):
 def page_whatif(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
-      <div class='title-sub'>Hướng 2 · Scenario Planning</div>
+      <div class='title-sub'>Scenario Planning</div>
       <h1 style='margin:0;font-size:1.9rem'>🎯 What-If Simulator</h1>
       <p style='color:#64748b'>Giả lập kịch bản rủi ro: Nếu khách hàng thay đổi mẫu mã/số lượng, nhà máy sẽ bị quá tải ở đâu?</p>
     </div>
@@ -1343,7 +1343,7 @@ def page_whatif(temperature):
 def page_risk(temperature):
     st.markdown("""
     <div style='padding:8px 0 24px'>
-      <div class='title-sub'>Hướng 3 · Risk Management</div>
+      <div class='title-sub'>Risk Management</div>
       <h1 style='margin:0;font-size:1.9rem'>⚠️ Risk Detector</h1>
       <p style='color:#64748b'>Phát hiện đơn hàng rủi ro dựa trên Attention Dispersion + Factory Load. Đề xuất giảm tiến độ SX trên đơn không chắc chắn.</p>
     </div>

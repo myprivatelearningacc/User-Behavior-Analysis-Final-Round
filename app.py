@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
-import subprocess
+import requests
 import math
 import pickle
 import io
@@ -23,8 +23,6 @@ import seaborn as sns
 from collections import Counter
 from pathlib import Path
 import warnings
-import requests
-from pathlib import Path
 warnings.filterwarnings('ignore')
 
 # ── Page config ────────────────────────────────────────────────────
@@ -256,7 +254,7 @@ CHAIN_SECOND      = ['attr_4','attr_5']
 CHAIN_MAP         = {'attr_4':'attr_1','attr_5':'attr_2'}
 EMBED_DIM=160; N_HEADS=4; N_LAYERS=5; FF_DIM=640; DROPOUT=0.1
 POOL_EARLY_END=8; POOL_MID_END=16
-ARTIFACT_URL = "https://drive.google.com/uc?export=download&id=13KHoKBEwxgMecEbqVr1vtaOc3BDpHlxm"
+ARTIFACT_URL = "https://huggingface.co/meimei1302/dataflow-artifacts/resolve/main/artifacts_v96.pkl"
 ARTIFACT_PATH = Path("artifacts_v96.pkl")
 DEVICE = torch.device('cpu')
 
@@ -471,36 +469,27 @@ class _PandasFixUnpickler(pickle.Unpickler):
 def download_file(url: str, output_path: Path):
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # xóa file lỗi cũ nếu có
-    if output_path.exists():
-        output_path.unlink()
+    with requests.get(url, stream=True, timeout=300) as r:
+        r.raise_for_status()
+        with open(output_path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024 * 1024):
+                if chunk:
+                    f.write(chunk)
 
-    try:
-        import gdown
-    except ImportError:
-        subprocess.check_call(["python", "-m", "pip", "install", "gdown"])
-        import gdown
-
-    gdown.download(url, str(output_path), quiet=False, fuzzy=True)
-
-    if not output_path.exists() or output_path.stat().st_size == 0:
-        raise RuntimeError("Download failed: file not created.")
 @st.cache_resource(show_spinner="Loading model...")
 def load_artifacts():
     try:
         if not ARTIFACT_PATH.exists():
-            with st.spinner("Downloading artifacts_v96.pkl..."):
+            with st.spinner("Downloading artifacts_v96.pkl from Hugging Face..."):
                 download_file(ARTIFACT_URL, ARTIFACT_PATH)
 
-        # kiểm tra file có phải HTML không
         with open(ARTIFACT_PATH, "rb") as f:
-            head = f.read(50)
+            head = f.read(100)
             f.seek(0)
 
-            if head.startswith(b"<") or b"<!DOCTYPE html" in head.lower():
-                raise RuntimeError(
-                    "Downloaded file is HTML, not a pickle. Google Drive direct link is not working."
-                )
+            # chặn trường hợp tải nhầm HTML
+            if head.startswith(b"<") or b"html" in head.lower():
+                raise RuntimeError("Downloaded file is HTML, not a valid pickle file.")
 
             try:
                 arts = pickle.load(f)
@@ -526,6 +515,7 @@ def load_artifacts():
         st.error(f"Cannot load artifacts: {e}")
         st.code(str(e))
         return None
+
 # ══════════════════════════════════════════════════════════════════
 # INFERENCE
 # ══════════════════════════════════════════════════════════════════

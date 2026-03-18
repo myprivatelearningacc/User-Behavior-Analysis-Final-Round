@@ -1937,6 +1937,9 @@ def page_analytics():
             st.image(fig_to_bytes(fig_scale), use_container_width=True)
 
             # Scalability analysis text
+            min_l = latency_data[0]
+            max_l = latency_data[-1]
+            ratio = max_l['mean_ms'] / max(min_l['mean_ms'], 0.1)
             min_tp = df_lat['throughput_rps'].iloc[0]
             max_tp = df_lat['throughput_rps'].iloc[-1]
 

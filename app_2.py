@@ -1937,22 +1937,22 @@ def page_analytics():
             st.image(fig_to_bytes(fig_scale), use_container_width=True)
 
             # Scalability analysis text
-            min_l = latency_data[0]
-            max_l = latency_data[-1]
-            ratio = max_l['mean_ms'] / max(min_l['mean_ms'], 0.1)
+            min_tp = df_lat['throughput_rps'].iloc[0]
+            max_tp = df_lat['throughput_rps'].iloc[-1]
+
             st.markdown(f"""
             <div style='background:rgba(15,23,42,0.7);border:1px solid rgba(99,179,237,0.15);
                         border-radius:10px;padding:14px 18px;margin-top:12px'>
-              <div style='color:#63b3ed;font-size:0.85rem;font-weight:700;margin-bottom:10px'>📐 Scalability Analysis</div>
-              <div style='color:#94a3b8;font-size:0.82rem;line-height:1.8'>
+            <div style='color:#63b3ed;font-size:0.85rem;font-weight:700;margin-bottom:10px'>📐 Scalability Analysis</div>
+            <div style='color:#94a3b8;font-size:0.82rem;line-height:1.8'>
                 • Latency tăng <b style='color:#fbbf24'>{ratio:.1f}×</b> khi seq_len tăng
-                  từ <b style='color:#63b3ed'>{min_l["seq_len"]}</b> → <b style='color:#63b3ed'>{max_l["seq_len"]}</b> tokens<br>
+                từ <b style='color:#63b3ed'>{min_l["seq_len"]}</b> → <b style='color:#63b3ed'>{max_l["seq_len"]}</b> tokens<br>
                 • Transformer: O(n²) attention — latency tăng bậc hai theo seq_len<br>
                 • <b style='color:#34d399'>Thực tế:</b> V9.6 max_seq_len={max_seq_len}, hầu hết sequences ngắn hơn → throughput cao<br>
-                • CPU throughput: <b style='color:#63b3ed'>{latency_data[0]["throughput_rps"]:.0f}–{latency_data[-1]["throughput_rps"]:.0f} req/s</b>
-                  | GPU A5000 dự kiến <b style='color:#34d399'>10-50×</b> nhanh hơn cho batch inference<br>
+                • CPU throughput: <b style='color:#63b3ed'>{min_tp:.0f}–{max_tp:.0f} req/s</b>
+                | GPU A5000 dự kiến <b style='color:#34d399'>10-50×</b> nhanh hơn cho batch inference<br>
                 • Ensemble ×{n_ens}: mỗi model chạy độc lập → có thể parallelize để giảm latency
-              </div>
+            </div>
             </div>""", unsafe_allow_html=True)
 
             # Store for export

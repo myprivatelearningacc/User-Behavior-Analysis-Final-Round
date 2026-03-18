@@ -755,17 +755,17 @@ def make_sidebar():
     st.sidebar.divider()
 
     page = st.sidebar.radio("📌 Navigation", [
-        "🏠 Home",
-        "🔮 Single Prediction",
-        "📂 Batch Import & Export",
-        "🏭 Capacity Planner",
-        "🧬 Token DNA",
-        "📊 Attention & XAI",
-        "⚙️ Dynamic Scheduler",
-        "🎯 What-If Simulator",
-        "⚠️ Risk Detector",
-        "🕐 Prediction History",
-        "📈 Model Analytics",
+        "🏠 Trang chủ",
+        "🔮 Dự đoán 1 khách hàng",
+        "📂 Nhập và xuất dữ liệu hàng loạt",
+        "🏭 Kế hoạch công suất nhà máy",
+        "🧬 Hồ sơ hành vi",
+        "📊 Giải thích dự đoán",
+        "⚙️ Lập lịch sản xuất",
+        "🎯 Giả lập kịch bản",
+        "⚠️ Phát hiện rủi ro",
+        "🕐 Lịch sử Dự đoán",
+        "📈 Phân tích mô hình",
     ], label_visibility="collapsed")
 
     st.sidebar.divider()
@@ -2012,17 +2012,17 @@ def page_analytics():
 # ══════════════════════════════════════════════════════════════════
 def main():
     page, temperature = make_sidebar()
-    if   page=="🏠 Home":                  page_home()
-    elif page=="🔮 Single Prediction":     page_prediction(temperature)
-    elif page=="📂 Batch Import & Export": page_batch(temperature)
-    elif page=="🏭 Capacity Planner":      page_capacity(temperature)
-    elif page=="🧬 Token DNA":             page_token_dna(temperature)
-    elif page=="📊 Attention & XAI":       page_attention(temperature)
-    elif page=="⚙️ Dynamic Scheduler":    page_scheduler(temperature)
-    elif page=="🎯 What-If Simulator":     page_whatif(temperature)
-    elif page=="⚠️ Risk Detector":         page_risk(temperature)
-    elif page=="🕐 Prediction History":    page_history()
-    elif page=="📈 Model Analytics":       page_analytics()
+    if   page=="🏠 Trang chủ":                  page_home()
+    elif page=="🔮 Dự đoán 1 khách hàng":     page_prediction(temperature)
+    elif page=="📂 Nhập và xuất dữ liệu hàng loạt": page_batch(temperature)
+    elif page=="🏭 Kế hoạch công suất nhà máy":      page_capacity(temperature)
+    elif page=="🧬 Hồ sơ hành vi":             page_token_dna(temperature)
+    elif page=="📊 Giải thích dự đoán":       page_attention(temperature)
+    elif page=="⚙️ Lập lịch sản xuất":    page_scheduler(temperature)
+    elif page=="🎯 Giả lập kịch bản":     page_whatif(temperature)
+    elif page=="⚠️ Phát hiện rủi ro":         page_risk(temperature)
+    elif page=="🕐 Lịch sử Dự đoán":    page_history()
+    elif page=="📈 Phân tích mô hình":       page_analytics()
 
 if __name__ == "__main__":
     main()

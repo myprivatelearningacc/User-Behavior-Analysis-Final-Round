@@ -1180,18 +1180,23 @@ def render_unk_warning(result):
     unk = result.get('unk_tokens', [])
     if not unk:
         return
+
     unk_unique = list(set(unk))
-    st.markdown(
-        f"""<div class='unk-warn'>
-        ⚠️ <b>Unknown tokens detected</b>: {', '.join(str(t) for t in unk_unique[:10])}
-        {"..." if len(unk_unique) > 10 else ""}
-        ({len(unk)} occurrence{'s' if len(unk) > 1 else ''}, {result['unk_ratio']:.0%} of sequence)
-        → Các token này <b>không có trong vocabulary</b> lúc training và được map sang UNK index.
-        Dự đoán vẫn chạy nhưng <b>độ chính xác có thể giảm</b>.
-        Kiểm tra lại dữ liệu đầu vào.
-        </div>""",
-        unsafe_allow_html=True
+    unk_preview = ', '.join(str(t) for t in unk_unique[:10])
+    unk_suffix = "..." if len(unk_unique) > 10 else ""
+    occ_text = "occurrence" if len(unk) == 1 else "occurrences"
+
+    html = (
+        f"<div class='unk-warn'>"
+        f"⚠️ <strong>Unknown tokens detected</strong>: {unk_preview}{unk_suffix} "
+        f"({len(unk)} {occ_text}, {result['unk_ratio']:.0%} of sequence) "
+        f"→ Các token này <strong>không có trong vocabulary</strong> lúc training và được map sang UNK index. "
+        f"Dự đoán vẫn chạy nhưng <strong>độ chính xác có thể giảm</strong>. "
+        f"Kiểm tra lại dữ liệu đầu vào."
+        f"</div>"
     )
+
+    st.markdown(html, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════
 # PAGE: HOME
